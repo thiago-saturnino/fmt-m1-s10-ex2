@@ -1,3 +1,7 @@
+/*Após criar o modelo User no exercício anterior, é necessário implementar uma rota
+ do tipo POST com o path "/users" que receba valores por meio de BODY params.
+*/
+
 const express = require("express");
 const connection = require("./src/database");
 const Place = require("./src/models/places");
@@ -11,59 +15,54 @@ connection.authenticate();
 connection.sync({ alter: true });
 console.log("API ON");
 
-app.listen(3333, () => {
+app.listen(3332, () => {
   console.log("SERVIDOR ON!");
 });
 
-app.post("/places", async (req, res) => {
+app.post("/places", async (request, response) => {
   try {
     const place = {
-      name: req.body.name,
-
-      numberPhone: req.body.numberPhone,
-
-      openingHours: req.body.openingHours,
-
-      description: req.body.description,
-
-      latitude: req.body.latitude,
-
-      longitude: req.body.longitude,
+      name: request.body.name,
+      numberPhone: request.body.numberPhone,
+      openingHours: request.body.openingHours,
+      description: request.body.description,
+      latitude: request.body.latitude,
+      longitude: request.body.longitude,
     };
 
     const newPlace = await Place.create(place);
 
-    res.status(201).json(newPlace);
+    response.status(201).json(newPlace);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    response.status(400).json({ message: error.message });
   }
 });
 
-app.get("/places", async (req, res) => {
+app.get("/places", async (request, response) => {
   try {
     const places = await Place.findAll();
-    return res.json(places);
+    return response.json(places);
   } catch (error) {
-    res.status(500).json({ message: "Não há dados" });
+    response.status(500).json({ message: "Não há dados" });
   }
 });
 
-app.delete("/places/:id", async (req, res) => {
+app.delete("/places/:id", async (request, response) => {
   try {
-    const place = await Place.findByPk(req.params.id);
+    const place = await Place.findByPk(request.params.id);
     if (!place) {
-      return res.status(404).json({ message: "Local não encontrado" });
+      return response.status(404).json({ message: "Local não encontrado" });
     }
     await place.destroy();
-    res.status(204).json();
+    response.status(204).json();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    response.status(500).json({ message: error.message });
   }
 });
 
-app.put("/places/:id", async (req, res) => {
+app.put("/places/:id", async (request, response) => {
   try {
-    const { id } = req.params;
+    const { id } = request.params;
     const {
       name,
       numberPhone,
@@ -71,7 +70,7 @@ app.put("/places/:id", async (req, res) => {
       description,
       latitude,
       longitude,
-    } = req.body;
+    } = request.body;
 
     const place = await Place.findByPk(id);
 
@@ -84,28 +83,25 @@ app.put("/places/:id", async (req, res) => {
 
     const placeUpdated = await place.save();
 
-    return res.json(placeUpdated);
+    return response.json(placeUpdated);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return response.status(400).json({ message: error.message });
   }
 });
 
-app.post("/users", async (req, res) => {
+app.post("/users", async (request, response) => {
   try {
     const user = {
-      name: req.body.name,
-
-      email: req.body.email,
-
-      username: req.body.username,
-
-      password: req.body.password,
+      name: request.body.name,
+      email: request.body.email,
+      username: request.body.username,
+      password: request.body.password,
     };
 
     const newUser = await User.create(user);
 
-    res.status(201).json(newUser);
+    response.status(201).json(newUser);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    response.status(400).json({ message: error.message });
   }
 });

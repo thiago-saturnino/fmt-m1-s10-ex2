@@ -4,8 +4,8 @@ const connection = new Sequelize({
   dialect: "postgres",
   host: "localhost",
   username: "postgres",
-  password: "1234",
-  database: "places",
+  password: "123456",
+  database: "places_trindade",
   define: {
     timestamps: true,
     underscored: true,
